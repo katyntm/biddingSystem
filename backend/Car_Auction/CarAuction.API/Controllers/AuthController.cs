@@ -31,15 +31,5 @@ namespace CarAuction.API.Controllers
             var result = await _authService.LogOutAsync();
             return Ok(result);
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
-        {
-            var result = await _authService.RegisterAsync(dto);
-            if (result.Success)
-                return Ok(result);
-            
-            return BadRequest(result);
-        }
     }
 }
