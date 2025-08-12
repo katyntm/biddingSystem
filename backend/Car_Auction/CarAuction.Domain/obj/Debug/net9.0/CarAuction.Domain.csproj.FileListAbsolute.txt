@@ -1,0 +1,13 @@
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\bin\Debug\net9.0\CarAuction.Domain.deps.json
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\bin\Debug\net9.0\CarAuction.Domain.dll
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\bin\Debug\net9.0\CarAuction.Domain.pdb
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.csproj.AssemblyReference.cache
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.AssemblyInfoInputs.cache
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.AssemblyInfo.cs
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.sourcelink.json
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.dll
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\refint\CarAuction.Domain.dll
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\CarAuction.Domain.pdb
+C:\Users\Admin\Downloads\OJT\Bidding\backup2\backup\backend\Car_Auction\CarAuction.Domain\obj\Debug\net9.0\ref\CarAuction.Domain.dll

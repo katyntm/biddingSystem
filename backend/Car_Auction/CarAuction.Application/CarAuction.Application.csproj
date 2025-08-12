@@ -7,13 +7,40 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="obj\Debug\net9.0\.NETCoreApp,Version=v9.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net9.0\CarAuction.Application.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net9.0\CarAuction.Application.GlobalUsings.g.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="obj\CarAuction.Application.csproj.nuget.dgspec.json" />
+    <Content Include="obj\Debug\net9.0\CarAuction.Application.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\net9.0\CarAuction.Application.sourcelink.json" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CarAuction.Domain\CarAuction.Domain.csproj" />
     <ProjectReference Include="..\CarAuction.Infrastructure\CarAuction.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="bin\Debug\net9.0\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="obj\Debug\net9.0\refint\" />
+    <Folder Include="obj\Debug\net9.0\ref\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="obj\CarAuction.Application.csproj.nuget.g.props" />
+    <None Include="obj\CarAuction.Application.csproj.nuget.g.targets" />
+    <None Include="obj\Debug\net9.0\CarAuction.Application.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net9.0\CarAuction.Application.assets.cache" />
+    <None Include="obj\Debug\net9.0\CarAuction.Application.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\net9.0\CarAuction.Application.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net9.0\CarAuction.Application.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\project.nuget.cache" />
   </ItemGroup>
 
 </Project>
