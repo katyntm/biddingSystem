@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Todos_API.Application.DTOs.Auth
+namespace CarAuction.Application.DTOs.Auth
 {
     public class LoginDto
     {
@@ -12,6 +12,3 @@ namespace Todos_API.Application.DTOs.Auth
         public string Password { get; set; }
     }
 }
-
-
-

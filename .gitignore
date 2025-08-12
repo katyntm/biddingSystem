@@ -25,6 +25,3 @@ dist-ssr
 *.sw?
 
 BE/*
-*/bin/*
-backend/Car_Auction/CarAuction.API/bin/*
-backend/Car_Auction/CarAuction.API/obj/*

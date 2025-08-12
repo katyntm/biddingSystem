@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "efqqVtnSkcz0DGgRgfEloS554a+4f1/vB8109XK3QKE=",
+  "Source": "CarAuction.API",
+  "BasePath": "_content/CarAuction.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

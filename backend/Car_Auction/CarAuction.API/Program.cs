@@ -1,10 +1,15 @@
 ﻿
+using System.Text;
 using CarAuction.API.Middlewares;
+using CarAuction.Application.Services;
+using CarAuction.Application.Services.Interfaces;
 using CarAuction.Domain.Entities;
 using CarAuction.Infrastructure.DI;
 using CarAuction.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace CarAuction.API
@@ -17,43 +22,52 @@ namespace CarAuction.API
 
             // Add services to the container.
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication();
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<CarAuctionDbContext>();
+            // Configure CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
-// // Identity Configuration
-//             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-//             {
-//                 options.Password.RequireDigit = true;
-//                 options.Password.RequiredLength = 6;
-//                 options.Password.RequireNonAlphanumeric = false;
-//                 options.Password.RequireUppercase = false;
-//                 options.Password.RequireLowercase = false;
-//                 options.User.RequireUniqueEmail = true;
-//             }).AddEntityFrameworkStores<CarAuctionDbContext>()
-//               .AddDefaultTokenProviders();
 
-//             // JWT Authentication
-//             builder.Services.AddAuthentication(options =>
-//             {
-//                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//             }).AddJwtBearer(options =>
-//             {
-//                 options.TokenValidationParameters = new TokenValidationParameters
-//                 {
-//                     ValidateIssuerSigningKey = true,
-//                     ValidateIssuer = true,
-//                     ValidateAudience = true,
-//                     ValidateLifetime = true,
-//                     ClockSkew = TimeSpan.Zero,
-//                     ValidIssuer = builder.Configuration["JWT:Issuer"],
-//                     ValidAudience = builder.Configuration["JWT:Audience"],
-//                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
-//                 };
-//             });
+            // Identity Configuration
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.User.RequireUniqueEmail = false;
+            }).AddEntityFrameworkStores<CarAuctionDbContext>()
+              .AddDefaultTokenProviders();
 
-//             builder.Services.AddAuthorization();
-//             builder.Services.AddScoped<IAuthService, AuthService>();
+            // JWT Authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                };
+            });
+
+            // Authorization
+            builder.Services.AddAuthorization();
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -111,6 +125,9 @@ namespace CarAuction.API
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAll");
+
+            app.UseAuthentication();            
             app.UseAuthorization();
 
             app.MapControllers();
