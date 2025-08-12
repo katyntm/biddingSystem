@@ -35,42 +35,16 @@ namespace CarAuction.Application.Services
             {
                 Token = token,
                 Username = user.UserName,
+                Email = user.Email,
+                UserId = user.Id,
                 Balance = user.Balance
             });
         }
 
-
         public Task<ResponseResult<string>> LogOutAsync()
         {
+            // For JWT tokens, logout is typically handled client-side by removing the token
             return Task.FromResult(ResponseResult<string>.SuccessResult("Logged out"));
-        }
-
-        public async Task<ResponseResult<string>> RegisterAsync(RegisterDto dto)
-        {
-            var existingUser = await _userManager.FindByNameAsync(dto.UserName);
-            if (existingUser != null)
-                return ResponseResult<string>.FailResult("Username is already taken.");
-
-            if (dto.Password != dto.ConfirmPassword)
-                return ResponseResult<string>.FailResult("Passwords do not match.");
-
-            var newUser = new ApplicationUser
-            {
-                UserName = dto.UserName,
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                CreditStatus = CreditStatus.Active,
-                Balance = dto.Balance
-            };
-
-            var result = await _userManager.CreateAsync(newUser, dto.Password);
-            if (!result.Succeeded)
-            {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                return ResponseResult<string>.FailResult($"Registration failed: {errors}");
-            }
-
-            return ResponseResult<string>.SuccessResult(null, "Registration successful.");
         }
 
         private string GenerateJwtToken(ApplicationUser user)

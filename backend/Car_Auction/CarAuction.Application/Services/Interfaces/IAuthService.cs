@@ -7,6 +7,5 @@ namespace CarAuction.Application.Services.Interfaces
     {
         Task<ResponseResult<LoginResultDto>> LoginAsync(LoginDto dto);
         Task<ResponseResult<string>> LogOutAsync();
-        Task<ResponseResult<string>> RegisterAsync(RegisterDto dto);
     }
 }

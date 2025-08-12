@@ -5,7 +5,7 @@ namespace CarAuction.Domain.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-        public  CreditStatus CreditStatus {  get; set; }
+        public CreditStatus CreditStatus { get; set; }
         public decimal Balance { get; set; }
     }
 }
