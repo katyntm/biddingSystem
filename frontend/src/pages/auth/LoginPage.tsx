@@ -4,25 +4,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, type LoginFormData } from "./auth.type";
-import { loginApi } from "../../hooks/useAuth";
+import { useLogin } from "../../hooks/useAuth";
 import { setAccessToken, setBalance, setEmail, setUserId, setUserName } from "../../shared/utils/auth";
-import type { User } from "../../types/auth.types";
 import { AxiosError } from "axios";
+import type { ApiErrorResponse, User } from "../../types/auth.types";
 
 interface LoginPageProps {
   onLoginSuccess: (user: User) => void;
 }
 
-// Error type for API responses
-interface ApiErrorResponse {
-  message?: string;
-  errors?: Record<string, string[]>;
-}
-
 const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const loginMutation = useLogin();
 
   const {
     register,
@@ -36,10 +30,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   const onSubmit = async (data: LoginFormData) => {
     setError("");
-    setLoading(true);
 
     try {
-      const response = await loginApi({
+      const response = await loginMutation.mutateAsync({
         userName: data.username,
         password: data.password,
       });
@@ -81,10 +74,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
       setError(errorMessage);
       reset({ password: "" });
-    } finally {
-      setLoading(false);
     }
   };
+
+  const isLoading = loginMutation.isPending;
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
@@ -97,20 +90,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <Form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Form.Group className="mb-3" controlId="username">
               <Form.Label>Username</Form.Label>
-              <Form.Control type="text" placeholder="Enter username" {...register("username")} isInvalid={!!errors.username} disabled={loading} />
+              <Form.Control type="text" placeholder="Enter username" {...register("username")} isInvalid={!!errors.username} disabled={isLoading} />
               <Form.Control.Feedback type="invalid">{errors.username?.message}</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="Enter password" {...register("password")} isInvalid={!!errors.password} disabled={loading} />
+              <Form.Control type="password" placeholder="Enter password" {...register("password")} isInvalid={!!errors.password} disabled={isLoading} />
               <Form.Control.Feedback type="invalid">{errors.password?.message}</Form.Control.Feedback>
             </Form.Group>
 
             <div className="d-grid">
-              <Button variant="primary" type="submit" disabled={loading || !isValid} className="d-flex align-items-center justify-content-center">
-                {loading && <Spinner as="span" animation="border" size="sm" role="status" className="me-2" />}
-                {loading ? "Logging in..." : "Login"}
+              <Button variant="primary" type="submit" disabled={isLoading || !isValid} className="d-flex align-items-center justify-content-center">
+                {isLoading && <Spinner as="span" animation="border" size="sm" role="status" className="me-2" />}
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </div>
           </Form>

@@ -12,7 +12,7 @@ export interface LoginResponse {
     userId: string;
     balance: number;
   };
-  message: string;
+  message?: string;
 }
 
 export interface User {
@@ -26,4 +26,9 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+}
+
+export interface ApiErrorResponse {
+  message?: string;
+  errors?: Record<string, string[]>;
 }

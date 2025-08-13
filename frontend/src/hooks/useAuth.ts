@@ -2,49 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { removeTokens, setAccessToken, setEmail, setUserName, setUserId, setBalance } from '../shared/utils/auth';
 import { toast } from 'react-toastify';
-import instance from "../shared/utils/axios";
 import { AxiosError } from 'axios';
-
-// Types that match the backend API response
-export interface LoginRequest {
-  userName: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  success: boolean;
-  data: {
-    token: string;
-    username: string;
-    email: string;
-    userId: string;
-    balance: number;
-  };
-  message?: string;
-}
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  balance: number;
-}
-
-// Error type for API responses
-interface ApiErrorResponse {
-  message?: string;
-  errors?: Record<string, string[]>;
-}
-
-// API function that matches the real backend
-export const loginApi = async (credentials: LoginRequest): Promise<LoginResponse> => {
-  const response = await instance.post("/auth/login", credentials);
-  return response.data;
-};
-
-export const logoutApi = async (): Promise<void> => {
-  await instance.post("/auth/logout");
-};
+import { loginApi, logoutApi, type ApiErrorResponse, type LoginResponse } from '../services/auth.service';
 
 // Hook for login with React Query
 export const useLogin = () => {
@@ -71,7 +30,7 @@ export const useLogin = () => {
         throw new Error(data.message || 'Login failed');
       }
     },
-   onError: (error: AxiosError<ApiErrorResponse> | Error) => {
+    onError: (error: AxiosError<ApiErrorResponse> | Error) => {
       console.error('Login failed:', error);
       
       let errorMessage = 'Login failed. Please check your credentials.';
@@ -125,3 +84,6 @@ export const useSimpleLogout = () => {
     toast.info('You have been logged out.');
   };
 };
+
+// Re-export the API functions for direct use where hooks can't be used
+export { loginApi, logoutApi } from '../services/auth.service';
