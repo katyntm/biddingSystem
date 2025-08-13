@@ -7,9 +7,7 @@ import axios, {
 } from "axios";
 
 // Can switch between JSONPlaceholder and your real API
-const API_BASE_URL = import.meta.env.VITE_USE_MOCK_API === 'true' 
-  ? 'https://jsonplaceholder.typicode.com'
-  : import.meta.env.VITE_API_BASE_URL || 'http://localhost:5291/api';
+const API_BASE_URL = 'http://localhost:5291/api';
 
 const instance = axios.create({
    baseURL: API_BASE_URL,
@@ -24,10 +22,10 @@ const getAccessToken = () => {
 
 const removeTokens = () => {
   localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken'); // Keep for cleanup but won't be used
-  localStorage.removeItem('role');
   localStorage.removeItem('userName');
   localStorage.removeItem('email');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('balance');
 };
 
 const requestAuthInterceptor = (req: AxiosRequestConfig): InternalAxiosRequestConfig => {

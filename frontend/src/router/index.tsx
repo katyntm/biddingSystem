@@ -3,24 +3,33 @@ import AuthRoutes from "./auth";
 import ReportsRoutes from "./report";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
-import VehiclesPage from "../pages/vehicles/VehiclesPage";
+import ProtectedRoute from "../components/ProtectedRoute";
+import type { User } from "../services/auth.service";
 
-const AppRouter = () => {
+interface AppRouterProps {
+  user: User | null;
+  isAuthenticated: boolean;
+  onLoginSuccess: (user: User) => void;
+  onLogout: () => void;
+}
+
+const AppRouter: React.FC<AppRouterProps> = ({ user, isAuthenticated, onLoginSuccess, onLogout }) => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
-        <Route path="/auth/*" element={<AuthRoutes />} />
+        <Route path="/auth/*" element={<AuthRoutes onLoginSuccess={onLoginSuccess} />} />
       </Route>
 
-      <Route element={<MainLayout />}>
+      <Route element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <MainLayout user={user} onLogout={onLogout} />
+        </ProtectedRoute>
+      }>
         <Route path="/reports/*" element={<ReportsRoutes />} />
         {/* Add more main routes here later */}
-        <Route path="/vehicles" element={<VehiclesPage />} />
-        {/* <Route path="/auctions" element={<AuctionsPage />} /> */}
       </Route>
 
-      {/* <Route path="/" element={<Navigate to="/reports/purchases" />} /> */}
-      <Route path="/" element={<Navigate to="/auth/login" />} />
+      <Route path="/" element={<Navigate to={isAuthenticated ? "/reports/bids" : "/auth/login"} />} />
     </Routes>
   );
 };

@@ -1,14 +1,29 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { loginSchema, type LoginFormData } from "./auth.type";
+import { loginApi } from "../../hooks/useAuth";
+import { setAccessToken, setBalance, setEmail, setUserId, setUserName } from "../../shared/utils/auth";
+import type { User } from "../../types/auth.types";
+import { AxiosError } from "axios";
 
-const LoginPage = () => {
+interface LoginPageProps {
+  onLoginSuccess: (user: User) => void;
+}
+
+// Error type for API responses
+interface ApiErrorResponse {
+  message?: string;
+  errors?: Record<string, string[]>;
+}
+
+const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -18,22 +33,53 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   });
+
   const onSubmit = async (data: LoginFormData) => {
     setError("");
     setLoading(true);
 
     try {
-      // Simulate authentication - replace with actual API call
-      if (data.username === "admin" && data.password === "admin123") {
-        // Store token in localStorage (example)
-        localStorage.setItem("accessToken", "example-token");
-        navigate("/reports/purchases");
+      const response = await loginApi({
+        userName: data.username,
+        password: data.password,
+      });
+
+      if (response.success) {
+        // Store authentication data
+        setAccessToken(response.data.token);
+        setUserName(response.data.username);
+        setEmail(response.data.email);
+        setUserId(response.data.userId);
+        setBalance(response.data.balance);
+
+        // Create user object for parent component
+        const user: User = {
+          id: response.data.userId,
+          username: response.data.username,
+          email: response.data.email,
+          balance: response.data.balance,
+        };
+
+        // Notify parent component of successful login
+        onLoginSuccess(user);
+        
+        // Navigate to reports page after successful login
+        navigate('/reports/bids');
       } else {
-        throw new Error("Invalid credentials");
+        throw new Error(response.message || "Login failed");
       }
-    } catch (err) {
+    } catch (err: AxiosError<ApiErrorResponse> | Error | unknown) {
       console.error("Login failed:", err);
-      setError(err instanceof Error ? err.message : "Invalid username or password");
+
+      let errorMessage = "Invalid username or password";
+
+      if (err instanceof AxiosError) {
+        errorMessage = err.response?.data?.message || err.message || "Invalid username or password";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
       reset({ password: "" });
     } finally {
       setLoading(false);
@@ -52,8 +98,8 @@ const LoginPage = () => {
             <Form.Group className="mb-3" controlId="username">
               <Form.Label>Username</Form.Label>
               <Form.Control type="text" placeholder="Enter username" {...register("username")} isInvalid={!!errors.username} disabled={loading} />
+              <Form.Control.Feedback type="invalid">{errors.username?.message}</Form.Control.Feedback>
             </Form.Group>
-            <Form.Control.Feedback type="invalid">{errors.username?.message}</Form.Control.Feedback>
 
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
@@ -68,10 +114,6 @@ const LoginPage = () => {
               </Button>
             </div>
           </Form>
-
-          <div className="text-center mt-3">
-            {/* <small className="text-muted">Demo credentials: admin / password</small> */}
-          </div>
         </Card.Body>
       </Card>
     </div>

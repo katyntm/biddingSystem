@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUserName } from '../shared/utils/auth';
-import { getBidReportsApi, getPurchaseReportsApi } from '../api/reports.api';
+import { getBidReportsApi, getPurchaseReportsApi } from '../services/reports.service';
 
 export const usePurchaseReports = () => {
   const userName = getUserName();
