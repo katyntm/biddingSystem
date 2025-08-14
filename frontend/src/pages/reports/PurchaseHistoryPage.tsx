@@ -1,26 +1,9 @@
-// import { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert } from "react-bootstrap";
 import { usePurchaseReports } from "../../hooks/useReports";
+import { formatCurrency, formatDateTime } from "../../shared/utils/format";
 
 const PurchaseHistoryPage = () => {
   const { data: purchaseReports = [], isLoading, error, isError } = usePurchaseReports();
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
 
   if (isLoading) {
     return (
@@ -59,7 +42,7 @@ const PurchaseHistoryPage = () => {
                   <tr>
                     <th>Description</th>
                     <th>VIN</th>
-                    <th>Sale Price</th>
+                    <th>Purchase Price</th>
                     <th>Purchase Date</th>
                   </tr>
                 </thead>
@@ -77,7 +60,7 @@ const PurchaseHistoryPage = () => {
                       <td>
                         <strong className="text-success">{formatCurrency(report.purchasePrice)}</strong>
                       </td>
-                      <td>{formatDate(report.purchaseDate)}</td>
+                      <td>{formatDateTime(report.purchaseDate)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -20,7 +20,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout }) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <LinkContainer to="/dashboard">
+              <LinkContainer to="/vehicles">
                 <Nav.Link>Dashboard</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/vehicles">

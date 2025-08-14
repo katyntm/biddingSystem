@@ -5,6 +5,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
 import type { User } from "../services/auth.service";
+import VehiclesRoutes from "./vehicle";
 
 interface AppRouterProps {
   user: User | null;
@@ -26,6 +27,7 @@ const AppRouter: React.FC<AppRouterProps> = ({ user, isAuthenticated, onLoginSuc
         </ProtectedRoute>
       }>
         <Route path="/reports/*" element={<ReportsRoutes />} />
+        <Route path="/vehicles/*" element={<VehiclesRoutes />} />
         {/* Add more main routes here later */}
       </Route>
 
