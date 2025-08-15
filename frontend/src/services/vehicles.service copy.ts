@@ -21,11 +21,12 @@ export const fetchVehicles = async (params: VehicleSearchParams): Promise<Vehicl
 const getMockVehicles = (params: VehicleSearchParams) => {
   const mockVehicles = generateMockVehicles(50);
 
-  // Apply filtering
-  const filtered = [...mockVehicles];
- 
+  // Remove all filtering logic - just use the original mock vehicles
+  let filtered = [...mockVehicles];
 
-  // Apply pagination
+  // Remove all sorting logic - keep original order
+  
+  // Apply pagination only
   const totalCount = filtered.length;
   const startIdx = (params.page - 1) * params.pageSize;
   const endIdx = startIdx + params.pageSize;

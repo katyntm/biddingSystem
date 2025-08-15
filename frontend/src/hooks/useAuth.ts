@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { removeTokens, setAccessToken, setEmail, setUserName, setUserId, setBalance } from '../shared/utils/auth';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
-import { loginApi, logoutApi, type ApiErrorResponse, type LoginResponse } from '../services/auth.service';
+import { loginApi } from '../services/auth.service';
+import type { ApiErrorResponse, LoginResponse } from '../types/auth.types';
 
 // Hook for login with React Query
 export const useLogin = () => {
@@ -33,7 +34,7 @@ export const useLogin = () => {
     onError: (error: AxiosError<ApiErrorResponse> | Error) => {
       console.error('Login failed:', error);
       
-      let errorMessage = 'Login failed. Please check your credentials.';
+      let errorMessage = 'Error occured.';
       
       if (error instanceof AxiosError) {
         errorMessage = error.response?.data?.message || 
@@ -48,31 +49,7 @@ export const useLogin = () => {
   });
 };
 
-// Hook for logout
-export const useLogout = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: logoutApi,
-    onSuccess: () => {
-      removeTokens();
-      queryClient.clear();
-      navigate('/auth/login');
-      toast.info('You have been logged out.');
-    },
-    onError: (error) => {
-      console.error('Logout failed:', error);
-      // Even if logout API fails, clear local storage
-      removeTokens();
-      queryClient.clear();
-      navigate('/auth/login');
-      toast.info('You have been logged out.');
-    },
-  });
-};
-
-// Simple logout function without API call (for immediate logout)
+// Simple logout function (client-side only)
 export const useSimpleLogout = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -84,6 +61,3 @@ export const useSimpleLogout = () => {
     toast.info('You have been logged out.');
   };
 };
-
-// Re-export the API functions for direct use where hooks can't be used
-export { loginApi, logoutApi } from '../services/auth.service';

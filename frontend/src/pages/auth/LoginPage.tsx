@@ -7,7 +7,7 @@ import { loginSchema, type LoginFormData } from "./auth.type";
 import { useLogin } from "../../hooks/useAuth";
 import { setAccessToken, setBalance, setEmail, setUserId, setUserName } from "../../shared/utils/auth";
 import { AxiosError } from "axios";
-import type { ApiErrorResponse, User } from "../../types/auth.types";
+import  { type ApiErrorResponse, type User } from "../../types/auth.types";
 
 interface LoginPageProps {
   onLoginSuccess: (user: User) => void;
@@ -64,7 +64,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     } catch (err: AxiosError<ApiErrorResponse> | Error | unknown) {
       console.error("Login failed:", err);
 
-      let errorMessage = "Invalid username or password";
+      let errorMessage = "Error occured.";
 
       if (err instanceof AxiosError) {
         errorMessage = err.response?.data?.message || err.message || "Invalid username or password";

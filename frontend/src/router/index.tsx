@@ -4,8 +4,8 @@ import ReportsRoutes from "./report";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
-import type { User } from "../services/auth.service";
 import VehiclesRoutes from "./vehicle";
+import type { User } from "../types/auth.types";
 
 interface AppRouterProps {
   user: User | null;

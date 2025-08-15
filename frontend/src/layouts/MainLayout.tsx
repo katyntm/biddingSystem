@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import type { User } from '../services/auth.service';
+import type { User } from '../types/auth.types';
 
 interface MainLayoutProps {
   user: User | null;
@@ -20,9 +20,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ user, onLogout }) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <LinkContainer to="/vehicles">
+              {/* <LinkContainer to="/vehicles">
                 <Nav.Link>Dashboard</Nav.Link>
-              </LinkContainer>
+              </LinkContainer> */}
               <LinkContainer to="/vehicles">
                 <Nav.Link>Vehicles</Nav.Link>
               </LinkContainer>

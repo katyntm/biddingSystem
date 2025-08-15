@@ -5,6 +5,7 @@ import axios, {
    HttpStatusCode,
    type InternalAxiosRequestConfig,
 } from "axios";
+import { getAccessToken, removeTokens } from "./auth";
 
 // Can switch between JSONPlaceholder and your real API
 const API_BASE_URL = 'http://localhost:5291/api';
@@ -15,18 +16,6 @@ const instance = axios.create({
 
 
 //---------------------------- Auth token helpers --------------------------
-
-const getAccessToken = () => {
-  return localStorage.getItem('accessToken');
-};
-
-const removeTokens = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('userName');
-  localStorage.removeItem('email');
-  localStorage.removeItem('userId');
-  localStorage.removeItem('balance');
-};
 
 const requestAuthInterceptor = (req: AxiosRequestConfig): InternalAxiosRequestConfig => {
    const token = getAccessToken();

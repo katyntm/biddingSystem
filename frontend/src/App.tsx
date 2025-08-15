@@ -2,13 +2,16 @@ import AppRouter from './router'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import { useEffect, useState } from 'react';
-import { getCurrentUser, isAuthenticated, removeTokens } from './shared/utils/auth';
-import { logoutApi, type User } from './services/auth.service';
+import { getCurrentUser, isAuthenticated} from './shared/utils/auth';
+import type { User } from './types/auth.types';
+import { useSimpleLogout } from './hooks/useAuth';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const logOut = useSimpleLogout();
 
   useEffect(() => {
     // Initialize auth state on app start
@@ -30,18 +33,10 @@ function App() {
   };
 
   const handleLogout = async () => {
-    try {
-      // Call backend logout API
-      await logoutApi();
-    } catch (error) {
-      console.error('Logout API failed:', error);
-      // Continue with local logout even if API fails
-    } finally {
-      // Clear local storage and state
-      removeTokens();
+      // Clear local state
       setUser(null);
       setAuthenticated(false);
-    }
+      logOut();
   };
 
   if (loading) {

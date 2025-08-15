@@ -2,27 +2,35 @@ export interface Vehicle {
   id: string;
   vin: string;
   make: string;
-  model: string;
-  year: number;
-  trim?: string;
-  exteriorColor: string;
-  mileage: number;
-  engineDetails: string;
+  modelYear: number; 
+  fuelType: string;
+  modelType: string; 
   transmission: string;
-  fuelType?: string;
-  condition?: string;
-  images: string[];
-  currentPrice: number;
+  bodyStyle: string;
+  color: string;
+  grade: number;
+  price: number;
+  location: string;
+  createdAt: string;
+  updatedAt: string;
+  vehicleImages: VehicleImage[];
+
+  // Additional frontend-only fields for auction functionality
   bidPrice?: number;
   buyItNowPrice?: number;
-  saleChannel: string;
-  startTime: string;
-  endTime: string;
-  numberOfBids: number;
-  viewCount?: number;
-  location?: string;
+  saleChannel?: string;
+  startTime?: string;
+  endTime?: string;
+  numberOfBids?: number;
   isActive?: boolean;
-  isSold: boolean;
+  isSold?: boolean;
+}
+
+export interface VehicleImage {
+  id: string;
+  vehicleId: string;
+  url: string;
+  createdAt: string;
 }
 
 export interface VehicleSearchParams {
@@ -30,14 +38,16 @@ export interface VehicleSearchParams {
   pageSize: number;
   keyword?: string;
   make?: string;
-  model?: string;
+  modelType?: string; 
   yearFrom?: number;
   yearTo?: number;
   priceFrom?: number;
   priceTo?: number;
   vin?: string;
-  condition?: string;
-  saleChannel?: string;
+  fuelType?: string;
+  bodyStyle?: string;
+  transmission?: string;
+  location?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
