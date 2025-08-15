@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Layout, Row, Col, Pagination, Spin, Card, Select, Input, Button, Typography, Space, Alert } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import VehicleCard from "../../components/VehicleCard";
-// import SearchFilters from "../../components/SearchFilters";
 import { useVehicles } from "../../hooks/useVehicles";
 import type { VehicleSearchParams } from "../../types/vehicle.types";
 
@@ -19,7 +18,6 @@ const VehiclesPage: React.FC = () => {
   });
   const [keyword, setKeyword] = useState("");
 
-  // Use the React Query hook
   const { data, isLoading, error, isError } = useVehicles(searchParams);
 
   const vehicles = data?.items || [];
@@ -29,14 +27,6 @@ const VehiclesPage: React.FC = () => {
     setSearchParams({ ...searchParams, keyword, page: 1 });
   };
 
-  // const handleFilterSearch = (filterParams: Partial<VehicleSearchParams>) => {
-  //   setSearchParams({ 
-  //     ...searchParams, 
-  //     ...filterParams, 
-  //     page: 1 
-  //   });
-  // };
-
   const handleClearFilters = () => {
     setKeyword("");
     setSearchParams({ 
@@ -44,16 +34,6 @@ const VehiclesPage: React.FC = () => {
       pageSize: 12,
       sortBy: 'price',
       sortOrder: 'asc'
-    });
-  };
-
-  const handleSortChange = (value: string) => {
-    const [sortBy, sortOrder] = value.split('-');
-    setSearchParams({ 
-      ...searchParams, 
-      sortBy, 
-      sortOrder: sortOrder as 'asc' | 'desc',
-      page: 1 
     });
   };
 
@@ -121,7 +101,6 @@ const VehiclesPage: React.FC = () => {
                       <Select 
                         defaultValue="price-asc" 
                         style={{ width: 180 }}
-                        onChange={handleSortChange}
                       >
                         <Option value="price-asc">Price: Low to High</Option>
                         <Option value="price-desc">Price: High to Low</Option>

@@ -23,7 +23,6 @@ const getMockVehicles = (params: VehicleSearchParams) => {
 
   // Apply filtering
   const filtered = [...mockVehicles];
- 
 
   // Apply pagination
   const totalCount = filtered.length;
