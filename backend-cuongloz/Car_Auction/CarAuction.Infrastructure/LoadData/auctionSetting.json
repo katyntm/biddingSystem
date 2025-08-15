@@ -1,0 +1,113 @@
+{
+  "auctionSession": {
+    "startTime": "2025-08-10T08:00:00",
+    "endTime": "2025-08-10T14:00:00"
+  },
+  "saleChannel": [
+    {
+      "name": "Online Discount 10%",
+      "pricePercentage": 0.9,
+      "buyItNowPercentage": 1.8
+    },
+    {
+      "name": "Online Discount 30%",
+      "pricePercentage": 0.7,
+      "buyItNowPercentage": 1.5
+    },
+    {
+      "name": "Hot Sale 50%",
+      "pricePercentage": 0.5,
+      "buyItNowPercentage": 1
+    },
+    {
+      "name": "Physical Auction",
+      "pricePercentage": 0,
+      "buyItNowPercentage": 0
+    }
+  ],
+  "tactics": [
+    {
+      "name": "Tactic A - BMW Electric 2024",
+      "criteria": [
+        {
+          "fieldName": "Make",
+          "operator": "=",
+          "value": "BMW, Tesla, Toyota"
+        },
+        {
+          "fieldName": "ModelYear",
+          "operator": "=",
+          "value": "2024, 2023"
+        },
+        {
+          "fieldName": "FuelType",
+          "operator": "=",
+          "value": "Electric, Gasoline"
+        },
+        {
+          "fieldName": "Grade",
+          "operator": ">=",
+          "value": "3"
+        },
+        {
+          "fieldName": "Grade",
+          "operator": "<",
+          "value": "5"
+        }
+      ],
+      "steps": [
+        {
+          "stepNumber": 1,
+          "saleChannelName": "Online Discount 10%"
+        },
+        {
+          "stepNumber": 2,
+          "saleChannelName": "Hot Sale 50%"
+        },
+        {
+          "stepNumber": 3,
+          "saleChannelName": "Physical Auction"
+        }
+      ]
+    },
+    {
+      "name": "Tactic B - Volvo Electric 2024",
+      "criteria": [
+        {
+          "fieldName": "Make",
+          "operator": "=",
+          "value": "Volvo"
+        },
+        {
+          "fieldName": "ModelYear",
+          "operator": "=",
+          "value": "2024, 2025"
+        },
+        {
+          "fieldName": "FuelType",
+          "operator": "=",
+          "value": "Electric"
+        },
+        {
+          "fieldName": "Grade",
+          "operator": ">=",
+          "value": "3"
+        }
+      ],
+      "steps": [
+        {
+          "stepNumber": 1,
+          "saleChannelName": "Online Discount 30%"
+        },
+        {
+          "stepNumber": 2,
+          "saleChannelName": "Online Discount 10%"
+        },
+        {
+          "stepNumber": 3,
+          "saleChannelName": "Physical Auction"
+        }
+      ]
+    }
+  ]
+}
