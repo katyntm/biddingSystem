@@ -15,7 +15,9 @@ namespace CarAuction.Infrastructure.DI
 
         public static async Task<IServiceCollection> AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\auctionSetting.json";
+            // var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\auctionSetting.json";
+            // relative file path
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "LoadData", "auctionSetting.json");
             var json = await File.ReadAllTextAsync(filePath);
             var root = JsonDocument.Parse(json).RootElement;
 
@@ -44,7 +46,7 @@ namespace CarAuction.Infrastructure.DI
                 options.AddTrigger(trigger => trigger
                     .ForJob(startJobKey)
                     .WithIdentity("AuctionStartJobTrigger")
-                    .WithCronSchedule($"0 0 {startTime.Hour} * * ?") 
+                    .WithCronSchedule($"0 0 {startTime.Hour} * * ?")
                 );
 
                 var endJobKey = new JobKey("AuctionEndJob");
@@ -53,7 +55,16 @@ namespace CarAuction.Infrastructure.DI
                 options.AddTrigger(trigger => trigger
                     .ForJob(endJobKey)
                     .WithIdentity("AuctionEndJobTrigger")
-                    .WithCronSchedule($"0 0 {endTime.Hour} * * ?") 
+                    .WithCronSchedule($"0 0 {endTime.Hour} * * ?")
+                );
+
+                // Vehicle Import Job
+                var vehicleImportJobKey = new JobKey("VehicleImportJob");
+                options.AddJob<VehicleImportJob>(job => job.WithIdentity(vehicleImportJobKey));
+                options.AddTrigger(trigger => trigger
+                    .ForJob(vehicleImportJobKey)
+                    .WithIdentity("VehicleImportJobTrigger")
+                    .WithCronSchedule("0 */5 0 * * * ?") // 5 minutes interval
                 );
             });
 
@@ -66,6 +77,11 @@ namespace CarAuction.Infrastructure.DI
             services.AddScoped<moveNextSession>();
             services.AddScoped<AuctionStartJob>();
             services.AddScoped<AuctionEndJob>();
+
+            // CSV Import Service
+            services.AddScoped<CsvImportService>();
+            services.AddScoped<ImageImportService>();
+            services.AddScoped<VehicleImportJob>();
 
             return services;
         }

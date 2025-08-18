@@ -21,7 +21,9 @@ namespace CarAuction.Infrastructure.Services.CronJobService
         }
         public async Task ImportAuctionSettingAsync()
         {
-            var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\auctionSetting.json";
+            // var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\auctionSetting.json";
+            // relative file path
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "LoadData", "auctionSetting.json");
             if (!File.Exists(filePath))
             {
                 _logger.LogWarning("auctionSetting.json not found at {path}", filePath);
