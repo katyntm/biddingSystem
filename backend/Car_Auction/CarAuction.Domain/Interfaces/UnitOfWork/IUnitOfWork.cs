@@ -1,7 +1,14 @@
-﻿namespace CarAuction.Domain.Interfaces.UnitOfWork
+﻿using CarAuction.Domain.Interfaces.Repositories;
+using System;
+using System.Threading.Tasks;
+
+namespace CarAuction.Domain.Interfaces.UnitOfWork
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        Task SaveChangeAsync();
+        IVehicleRepository Vehicles { get; }
+        IVehicleImageRepository VehicleImages { get; }
+        
+        Task<int> SaveChangesAsync();
     }
 }

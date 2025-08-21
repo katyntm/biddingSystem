@@ -12,12 +12,12 @@ namespace CarAuction.Domain.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         //FK
-        //public Guid VehicleId { get; set; }
+        public Guid VehicleId { get; set; }
         public Guid TacticId { get; set; }
         public Guid StepId { get; set; }
         public string WinnerUserId { get; set; }
 
-        //public Vehicle Vehicle { get; set; }
+        public Vehicle Vehicle { get; set; }
         public Tactic Tactic { get; set; }
         public Step Step { get; set; }
         public ApplicationUser WinnerUser { get; set; }

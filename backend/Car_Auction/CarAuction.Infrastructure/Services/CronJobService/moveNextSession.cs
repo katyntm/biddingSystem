@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarAuction.Infrastructure.Services.CronJobService
 {
-    public class moveNextSession
+    public class MoveNextSession
     {
         private readonly CarAuctionDbContext _context;
-        public moveNextSession(CarAuctionDbContext context)
+        public MoveNextSession(CarAuctionDbContext context)
         {
             _context = context;
         }
-        public async Task moveUnsoldVehicleAsync()
+        public async Task MoveUnsoldVehicleAsync()
         {
             var unsoldVehicles = await _context.AuctionVehicles
                 .Where(x => !x.IsSold /*&& x.EndTime <= DateTime.UtcNow*/)

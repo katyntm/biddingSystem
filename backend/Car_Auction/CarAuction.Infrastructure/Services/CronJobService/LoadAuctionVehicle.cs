@@ -1,8 +1,11 @@
 ﻿using CarAuction.Domain.Entities;
-using CarAuction.Infrastructure.Mock;
+using CarAuction.Domain.Interfaces.UnitOfWork;
+using CarAuction.Infrastructure.Options;
 using CarAuction.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace CarAuction.Infrastructure.Services.CronJobService
@@ -11,29 +14,23 @@ namespace CarAuction.Infrastructure.Services.CronJobService
     {
         private readonly CarAuctionDbContext _db;
         private readonly ILogger<LoadAuctionVehicle> _logger;
+        private readonly AuctionSettingOptions _auctionSetting;
+        private readonly IConfiguration _config;
+        private readonly IUnitOfWork _uow;
 
-        public LoadAuctionVehicle(CarAuctionDbContext db, ILogger<LoadAuctionVehicle> logger)
+        public LoadAuctionVehicle(CarAuctionDbContext db, ILogger<LoadAuctionVehicle> logger, IOptions<AuctionSettingOptions> auctionSetting, IConfiguration config, IUnitOfWork uow)
         {
             _db = db;
             _logger = logger;
+            _auctionSetting = auctionSetting.Value;
+            _config = config;
+            _uow = uow;
         }
         public async Task<List<Vehicle>> LoadVehicleInventoryAsync()
         {
-            var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\mockVehiclesTable.json";
-            if (!File.Exists(filePath))
-            {
-
-                _logger.LogWarning($"File JSON not found: {filePath}");
-                return new List<Vehicle>();
-            }
-
             try
             {
-                var jsonContent = await File.ReadAllTextAsync(filePath);
-                var vehicles = JsonSerializer.Deserialize<List<Vehicle>>(jsonContent, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var vehicles = (await _uow.Vehicles.GetAllAsync()).ToList();
                 _logger.LogInformation("Loading vehicles successful");
                 return vehicles ?? new List<Vehicle>();
             }
@@ -44,132 +41,151 @@ namespace CarAuction.Infrastructure.Services.CronJobService
             }
         }
 
-        private int GetVehicleScore(Vehicle vehicle, List<Criteria> criterias)
+
+        private int GetVehicleScore(Vehicle vehicle, List<Criteria> criteriaList)
         {
             int score = 0;
 
-            foreach (var c in criterias)
+            var groupedCriteria = criteriaList.GroupBy(c => c.FieldName);
+
+            foreach (var criteriaGroup in groupedCriteria)
             {
-                var values = c.Value.Split(',')
-                                    .Select(v => v.Trim())
-                                    .ToList();
+                //reflection
+                var propertyInfo = typeof(Vehicle).GetProperty(criteriaGroup.Key);
+                if (propertyInfo == null) continue;
 
-                switch (c.FieldName)
+                var vehicleValue = propertyInfo.GetValue(vehicle)?.ToString();
+                if (string.IsNullOrEmpty(vehicleValue)) continue;
+
+                bool matched = criteriaGroup.Any(criteria => IsCriteriaMatched(vehicleValue, criteria));
+                if (matched)
                 {
-                    case "Make":
-                        foreach (var v in values)
-                            if (vehicle.Make == v)
-                                score++;
-                        break;
-
-                    case "ModelYear":
-                        foreach (var v in values)
-                            if (vehicle.ModelYear == int.Parse(v))
-                                score++;
-                        break;
-
-                    case "FuelType":
-                        foreach (var v in values)
-                            if (vehicle.FuelType == v)
-                                score++;
-                        break;
-
-                    case "Grade":
-                        foreach (var v in values)
-                        {
-                            var num = decimal.Parse(v);
-
-                            if (c.Operator == ">=" && vehicle.Grade >= num)
-                                score++;
-                            else if (c.Operator == "<=" && vehicle.Grade <= num)
-                                score++;
-                            else if (c.Operator == "=" && vehicle.Grade == num)
-                                score++;
-                            else if (c.Operator == ">" && vehicle.Grade > num)
-                                score++;
-                            else if (c.Operator == "<" && vehicle.Grade < num)
-                                score++;
-                        }
-                        break;
+                    score++;
                 }
             }
 
             return score;
         }
+
+        private bool IsCriteriaMatched(string vehicleValue, Criteria criteria)
+        {
+            var criteriaValues = criteria.Value
+                .Split(',')
+                .Select(v => v.Trim())
+                .Where(v => !string.IsNullOrEmpty(v))
+                .ToList();
+
+            foreach (var criteriaValue in criteriaValues)
+            {
+                if (IsNumber(vehicleValue) && IsNumber(criteriaValue))
+                {
+                    if (CheckNumeric(vehicleValue, criteriaValue, criteria.Operator))
+                        return true;
+                }
+                else
+                {
+                    if (vehicleValue.Equals(criteriaValue, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        private bool IsNumber(string input)
+        {
+            try
+            {
+                decimal.Parse(input);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool CheckNumeric(string vehicleValue, string criteriaValue, string operatorSymbol)
+        {
+            decimal vehicleNumber = decimal.Parse(vehicleValue);
+            decimal criteriaNumber = decimal.Parse(criteriaValue);
+
+            return operatorSymbol switch
+            {
+                ">=" => vehicleNumber >= criteriaNumber,
+                "<=" => vehicleNumber <= criteriaNumber,
+                "=" => vehicleNumber == criteriaNumber,
+                ">" => vehicleNumber > criteriaNumber,
+                "<" => vehicleNumber < criteriaNumber,
+                _ => false
+            };
+        }
+
         public async Task LoadAuctionVehiclesAsync()
         {
-            var filePath = "C:\\Users\\CuongPC10\\Desktop\\OJT_Training\\backend\\Car_Auction\\CarAuction.Infrastructure\\LoadData\\auctionSetting.json";
-            var json = await File.ReadAllTextAsync(filePath);
-            var root = JsonDocument.Parse(json).RootElement;
-
-            var startTime = root.GetProperty("auctionSession").GetProperty("startTime").GetDateTime();
-            var endTime = root.GetProperty("auctionSession").GetProperty("endTime").GetDateTime();
-
             var allVehicles = await LoadVehicleInventoryAsync();
-        
             var tactics = await _db.Tactics.Include(t => t.Criterias).Include(t => t.Steps).ToListAsync();
 
             foreach (var tactic in tactics)
             {
                 var criterias = tactic.Criterias.ToList();
+                var count = criterias.Select(c => c.FieldName).Distinct().Count();
 
-                var scoredVehicles = allVehicles
-                    .Select(v => new { Vehicle = v, Score = GetVehicleScore(v, criterias) })
-                    .Where(x => x.Score >= 4)
+                var makeCriteria = criterias
+                    .Where(c => c.FieldName == "Make")
+                    .SelectMany(c => c.Value.Split(',').Select(v => v.Trim()))
                     .ToList();
 
-                List<Vehicle> finalVehicles = new();
-                if (scoredVehicles.Any())
+                var tacticVehicles = allVehicles;
+                if (makeCriteria.Any())
                 {
-                    int maxScore = scoredVehicles.Max(x => x.Score);
-                    finalVehicles.AddRange(scoredVehicles.Select(x => x.Vehicle));
-                    var topVehicles = scoredVehicles.Where(x => x.Score == maxScore).ToList();
-                    if (topVehicles.Count > 1)
-                    {
-                        var chosen = topVehicles.OrderBy(x => x.Vehicle.Id).First().Vehicle;
-                        finalVehicles.RemoveAll(v => topVehicles.Select(tv => tv.Vehicle.Id).Contains(v.Id));
-                        finalVehicles.Add(chosen);
-                    }
+                    tacticVehicles = allVehicles
+                        .Where(v => makeCriteria.Contains(v.Make, StringComparer.OrdinalIgnoreCase))
+                        .ToList();
                 }
 
-                var step1 = tactic.Steps.OrderBy(s => s.StepNumber).FirstOrDefault();
-                if (step1 != null)
+                var scoredVehicles = tacticVehicles
+                    .Select(v => new { Vehicle = v, Score = GetVehicleScore(v, criterias) })
+                    .Where(x => x.Score == count)
+                    .ToList();
+
+                var step = tactic.Steps.OrderBy(s => s.StepNumber).FirstOrDefault();
+                if (step != null)
                 {
-                    var saleChannel = await _db.SaleChannels.FirstOrDefaultAsync(sc => sc.Id == step1.SaleChannelId);
-                    foreach (var vehicle in finalVehicles)
+                    var saleChannel = await _db.SaleChannels.FirstOrDefaultAsync(sc => sc.Id == step.SaleChannelId);
+
+                    foreach (var x in scoredVehicles)
                     {
+                        var vehicle = x.Vehicle;
 
-                        var existingVehicleIds = await _db.AuctionVehicles
-                            .Select(av => av.VehicleId)
-                            .ToListAsync();
-
-                        bool exists = allVehicles
-                            .Where(v => existingVehicleIds.Contains(v.Id))
-                            .Any(v => v.VIN == vehicle.VIN);
-
+                        bool exists = await _db.AuctionVehicles.AnyAsync(av => av.VehicleId == vehicle.Id);
                         if (exists)
                         {
                             _logger.LogInformation($"Vehicle with VIN {vehicle.VIN} already exists in auction, skipping.");
                             continue;
                         }
+
                         _db.AuctionVehicles.Add(new AuctionVehicle
                         {
                             Id = Guid.NewGuid(),
                             VehicleId = vehicle.Id,
                             TacticId = tactic.Id,
-                            StepId = step1.Id,
+                            StepId = step.Id,
                             CurrentPrice = vehicle.Price * saleChannel.PricePercentage,
                             BuyItNowPrice = vehicle.Price * saleChannel.BuyItNowPercentage,
                             WinnerUserId = null,
                             IsSold = false,
                             CreatedAt = DateTime.UtcNow,
-                            StartTime = startTime,
-                            EndTime = endTime
+                            StartTime = _auctionSetting.AuctionSession.StartTime,
+                            EndTime = _auctionSetting.AuctionSession.EndTime
                         });
                     }
                 }
             }
+
             await _db.SaveChangesAsync();
         }
+
     }
 }

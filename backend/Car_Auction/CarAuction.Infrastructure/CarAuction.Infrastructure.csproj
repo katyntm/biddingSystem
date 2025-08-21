@@ -7,24 +7,38 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Jobs\**" />
-    <EmbeddedResource Remove="Jobs\**" />
-    <None Remove="Jobs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-	  <PackageReference Include="Quartz.Extensions.Hosting" Version="3.5.0" />
-	  <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.5.0" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+	  <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+	  <PackageReference Include="Quartz.Extensions.Hosting" Version="3.15.0" />
+	  <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.15.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
-    <PackageReference Include="Quartz" Version="3.15.0" />
-  </ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
+	  <PackageReference Include="Quartz" Version="3.15.0" />
+	  <PackageReference Include="Quartz.Serialization.Json" Version="3.15.0" />
+	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.3" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\CarAuction.Domain\CarAuction.Domain.csproj" />
-  </ItemGroup>
+		<PackageReference Include="CsvHelper" Version="33.0.1" />
 
+  </ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\CarAuction.Application\CarAuction.Application.csproj" />
+		<ProjectReference Include="..\CarAuction.Domain\CarAuction.Domain.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="LoadData\tables_sqlServer.sql">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="LoadData\auctionSetting.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>

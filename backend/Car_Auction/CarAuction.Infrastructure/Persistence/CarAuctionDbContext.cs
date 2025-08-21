@@ -13,7 +13,8 @@ namespace CarAuction.Infrastructure.Persistence
         public DbSet<Criteria> Criteria { get; set; }
         public DbSet<Step> Steps { get; set; }
         public DbSet<SaleChannel> SaleChannels { get; set; }
-
+        public DbSet<VehicleImage> VehicleImages { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -17,7 +17,7 @@ namespace CarAuction.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -133,6 +133,9 @@ namespace CarAuction.Infrastructure.Migrations
                     b.Property<Guid>("TacticId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("WinnerUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -141,6 +144,8 @@ namespace CarAuction.Infrastructure.Migrations
                     b.HasIndex("StepId");
 
                     b.HasIndex("TacticId");
+
+                    b.HasIndex("VehicleId");
 
                     b.HasIndex("WinnerUserId");
 
@@ -303,6 +308,88 @@ namespace CarAuction.Infrastructure.Migrations
                     b.ToTable("Tactics");
                 });
 
+            modelBuilder.Entity("CarAuction.Domain.Entities.Vehicle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BodyStyle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FuelType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Grade")
+                        .HasColumnType("decimal(3,1)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Make")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ModelType")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ModelYear")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Transmission")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VIN")
+                        .IsRequired()
+                        .HasMaxLength(17)
+                        .HasColumnType("nvarchar(17)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VIN")
+                        .IsUnique();
+
+                    b.ToTable("Vehicles");
+                });
+
+            modelBuilder.Entity("CarAuction.Domain.Entities.VehicleImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("VehicleImages");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -450,6 +537,12 @@ namespace CarAuction.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("CarAuction.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("AuctionVehicles")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CarAuction.Domain.Entities.ApplicationUser", "WinnerUser")
                         .WithMany()
                         .HasForeignKey("WinnerUserId")
@@ -458,6 +551,8 @@ namespace CarAuction.Infrastructure.Migrations
                     b.Navigation("Step");
 
                     b.Navigation("Tactic");
+
+                    b.Navigation("Vehicle");
 
                     b.Navigation("WinnerUser");
                 });
@@ -528,6 +623,17 @@ namespace CarAuction.Infrastructure.Migrations
                     b.Navigation("Tactic");
                 });
 
+            modelBuilder.Entity("CarAuction.Domain.Entities.VehicleImage", b =>
+                {
+                    b.HasOne("CarAuction.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany("VehicleImages")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -584,6 +690,13 @@ namespace CarAuction.Infrastructure.Migrations
                     b.Navigation("Criterias");
 
                     b.Navigation("Steps");
+                });
+
+            modelBuilder.Entity("CarAuction.Domain.Entities.Vehicle", b =>
+                {
+                    b.Navigation("AuctionVehicles");
+
+                    b.Navigation("VehicleImages");
                 });
 #pragma warning restore 612, 618
         }

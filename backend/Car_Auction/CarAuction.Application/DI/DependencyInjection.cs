@@ -1,10 +1,8 @@
 using CarAuction.Application.Services;
 using CarAuction.Application.Services.Interfaces;
-using CarAuction.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CarAuction.Infrastructure.DI
+namespace CarAuction.Application.DI
 {
   public static class DependencyInjection
   {

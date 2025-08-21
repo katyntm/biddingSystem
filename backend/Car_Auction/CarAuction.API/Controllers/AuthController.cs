@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using CarAuction.Application.DTOs.Auth;
 using CarAuction.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarAuction.API.Controllers
 {
