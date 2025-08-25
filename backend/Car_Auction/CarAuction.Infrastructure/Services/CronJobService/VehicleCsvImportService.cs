@@ -219,11 +219,7 @@ namespace CarAuction.Infrastructure.Services.CronJobService
 
     private bool IsValidVin(string vin)
     {
-      if (string.IsNullOrWhiteSpace(vin) || vin.Length != 17)
-        return false;
-
-      // Check if VIN contains only alphanumeric characters
-      return Regex.IsMatch(vin, @"^[A-Za-z0-9]+$");
+       return !string.IsNullOrWhiteSpace(vin) && vin.Length == 17 && vin.Any(char.IsLetter) && vin.Any(char.IsDigit);
     }
 
 

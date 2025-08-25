@@ -136,6 +136,9 @@ namespace CarAuction.Infrastructure.Migrations
                     b.Property<Guid>("VehicleId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("VehicleId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("WinnerUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -146,6 +149,8 @@ namespace CarAuction.Infrastructure.Migrations
                     b.HasIndex("TacticId");
 
                     b.HasIndex("VehicleId");
+
+                    b.HasIndex("VehicleId1");
 
                     b.HasIndex("WinnerUserId");
 
@@ -315,31 +320,36 @@ namespace CarAuction.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BodyStyle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Color")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("FuelType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Grade")
-                        .HasColumnType("decimal(3,1)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Location")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Make")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModelType")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ModelYear")
                         .HasColumnType("int");
@@ -348,15 +358,17 @@ namespace CarAuction.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Transmission")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("VIN")
                         .IsRequired()
-                        .HasMaxLength(17)
-                        .HasColumnType("nvarchar(17)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -538,10 +550,14 @@ namespace CarAuction.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("CarAuction.Domain.Entities.Vehicle", "Vehicle")
-                        .WithMany("AuctionVehicles")
+                        .WithMany()
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("CarAuction.Domain.Entities.Vehicle", null)
+                        .WithMany("AuctionVehicles")
+                        .HasForeignKey("VehicleId1");
 
                     b.HasOne("CarAuction.Domain.Entities.ApplicationUser", "WinnerUser")
                         .WithMany()

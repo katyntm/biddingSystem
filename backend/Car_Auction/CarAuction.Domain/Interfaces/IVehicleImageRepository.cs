@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CarAuction.Domain.Interfaces.Repositories
+namespace CarAuction.Domain.Interfaces
 {
     public interface IVehicleImageRepository
     {

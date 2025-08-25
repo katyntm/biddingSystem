@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CarAuction.Infrastructure.Persistence.Configurations
+namespace CarAuction.Infrastructure.Configurations
 {
     public class VehicleImageConfiguration : IEntityTypeConfiguration<VehicleImage>
     {

@@ -6,8 +6,8 @@ namespace CarAuction.Infrastructure.Repositories.@base
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly CarAuctionDbContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly CarAuctionDbContext _context;
+        protected readonly DbSet<T> _dbSet;
         public GenericRepository(CarAuctionDbContext context)
         {
             _context = context;

@@ -1,5 +1,6 @@
 ﻿using CarAuction.API.Middlewares;
 using CarAuction.Application.DI;
+using CarAuction.Application.Hubs;
 using CarAuction.Application.Options;
 using CarAuction.Application.OptionsSetup;
 using CarAuction.Domain.Entities;
@@ -59,7 +60,7 @@ namespace CarAuction.API
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            
+
             builder.Services.ConfigureOptions<SwaggerGenOptionsSetup>();
             builder.Services.AddSwaggerGen();
 
@@ -84,11 +85,12 @@ namespace CarAuction.API
 
             app.UseCors("AllowAll");
 
-            app.UseAuthentication();            
+            app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapHub<AuctionHub>("/auctionHub");
             app.MapControllers();
-
+            
             app.Run();
         }
     }

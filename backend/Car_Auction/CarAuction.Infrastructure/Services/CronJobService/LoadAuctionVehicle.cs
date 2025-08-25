@@ -18,11 +18,11 @@ namespace CarAuction.Infrastructure.Services.CronJobService
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _uow;
 
-        public LoadAuctionVehicle(CarAuctionDbContext db, ILogger<LoadAuctionVehicle> logger, IOptions<AuctionSettingOptions> auctionSetting, IConfiguration config, IUnitOfWork uow)
+        public LoadAuctionVehicle(CarAuctionDbContext db, ILogger<LoadAuctionVehicle> logger, IOptionsMonitor<AuctionSettingOptions> auctionSetting, IConfiguration config, IUnitOfWork uow)
         {
             _db = db;
             _logger = logger;
-            _auctionSetting = auctionSetting.Value;
+            _auctionSetting = auctionSetting.CurrentValue;
             _config = config;
             _uow = uow;
         }
@@ -163,9 +163,22 @@ namespace CarAuction.Infrastructure.Services.CronJobService
                         if (exists)
                         {
                             _logger.LogInformation($"Vehicle with VIN {vehicle.VIN} already exists in auction, skipping.");
+
+                            // Update existing auction vehicle's start and end time
+                            var existingAuctionVehicle = await _db.AuctionVehicles
+                                .FirstOrDefaultAsync(av => av.VehicleId == vehicle.Id);
+
+                            if (existingAuctionVehicle != null)
+                            {
+                                existingAuctionVehicle.StartTime = _auctionSetting.AuctionSession.StartTime;
+                                existingAuctionVehicle.EndTime = _auctionSetting.AuctionSession.EndTime;
+
+                                _db.AuctionVehicles.Update(existingAuctionVehicle);
+                            }
                             continue;
                         }
-
+                        // Log load auctionVehicle startTime and endTime
+                        _logger.LogInformation($"LoadAuctionVehicle for Vehicle VIN {vehicle.VIN} with Start Time: {_auctionSetting.AuctionSession.StartTime}, End Time: {_auctionSetting.AuctionSession.EndTime}");
                         _db.AuctionVehicles.Add(new AuctionVehicle
                         {
                             Id = Guid.NewGuid(),
@@ -186,6 +199,5 @@ namespace CarAuction.Infrastructure.Services.CronJobService
 
             await _db.SaveChangesAsync();
         }
-
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CarAuction.Domain.Entities;
-using CarAuction.Domain.Interfaces.Repositories;
+using CarAuction.Domain.Interfaces;
 using CarAuction.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;

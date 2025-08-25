@@ -2,7 +2,8 @@
 
 namespace CarAuction.Domain.Interfaces
 {
-    public  interface IAuctionVehicleRepository : IGenericRepository<AuctionVehicle>
+    public interface IAuctionVehicleRepository : IGenericRepository<AuctionVehicle>
     {
+        Task<IEnumerable<AuctionVehicle>> GetWonAuctionsByUserAsync(string userId);
     }
 }

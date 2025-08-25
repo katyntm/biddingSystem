@@ -90,7 +90,6 @@ namespace CarAuction.API.Controllers
             }
             await scheduler.TriggerJob(jobKey);
             return Ok($"Scheduled AuctionEndJob to run daily at {_auctionSetting.AuctionSession.EndTime.Hour}:00");
-
         }
     }
 }

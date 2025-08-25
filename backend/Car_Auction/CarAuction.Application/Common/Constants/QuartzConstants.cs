@@ -8,12 +8,14 @@
         {
             public const string AuctionStart = "AuctionStartJob";
             public const string AuctionEnd = "AuctionEndJob";
+            public const string VehicleImport = "VehicleImportJob";
         }
 
         public static class Triggers
         {
             public const string AuctionStart = "AuctionStartJobTrigger";
             public const string AuctionEnd = "AuctionEndJobTrigger";
+            public const string VehicleImport = "VehicleImportJobTrigger";
         }
 
         public static class Cron

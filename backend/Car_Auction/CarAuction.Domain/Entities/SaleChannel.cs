@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal PricePercentage { get; set; }
-        public decimal? BuyItNowPercentage { get; set; }
+        public decimal BuyItNowPercentage { get; set; }
     }
 }

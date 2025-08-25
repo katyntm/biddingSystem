@@ -23,7 +23,6 @@ namespace CarAuction.Infrastructure.Configurations
                 .WithMany()
                 .HasForeignKey(e => e.SaleChannelId)
                 .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

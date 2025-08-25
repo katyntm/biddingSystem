@@ -2,34 +2,57 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CarAuction.Infrastructure.Persistence.Configurations
+namespace CarAuction.Infrastructure.Configurations
 {
     public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
     {
         public void Configure(EntityTypeBuilder<Vehicle> builder)
         {
             builder.HasKey(v => v.Id);
-            
+
             builder.Property(v => v.VIN)
-                .IsRequired()
-                .HasMaxLength(17);
-                
+                .IsRequired();
+
             builder.HasIndex(v => v.VIN)
                 .IsUnique();
-                
+
             builder.Property(v => v.Make)
-                .IsRequired()
-                .HasMaxLength(50);
-                
+                .IsRequired();
+
             builder.Property(v => v.ModelType)
-                .HasMaxLength(100);
-                
+                .IsRequired();
+
             builder.Property(v => v.Price)
+                .IsRequired()
                 .HasColumnType("decimal(18,2)");
-                
+
             builder.Property(v => v.Grade)
-                .HasColumnType("decimal(3,1)");
-                
+                .IsRequired();
+
+            builder.Property(v => v.FuelType)
+                .IsRequired();
+
+            builder.Property(v => v.BodyStyle)
+                .IsRequired();
+
+            builder.Property(v => v.Color)
+                .IsRequired();
+
+            builder.Property(v => v.Transmission)
+                .IsRequired();
+
+            builder.Property(v => v.Location)
+                .IsRequired();
+
+            builder.Property(v => v.ModelYear)
+                .IsRequired();
+
+            builder.Property(v => v.CreatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
+            builder.Property(v => v.UpdatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
             // Navigation properties
             builder.HasMany(v => v.VehicleImages)
                 .WithOne(i => i.Vehicle)

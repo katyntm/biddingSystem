@@ -1,4 +1,4 @@
-namespace CarAuction.Infrastructure.DTOs
+namespace CarAuction.Application.DTOs
 {
     public class VehicleDto
     {

@@ -6,7 +6,7 @@ namespace CarAuction.Domain.Entities
     {
         public Guid Id { get; set; }
         public decimal CurrentPrice { get; set; }
-        public decimal? BuyItNowPrice { get; set; }
+        public decimal BuyItNowPrice { get; set; }
         public bool IsSold { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime StartTime { get; set; }

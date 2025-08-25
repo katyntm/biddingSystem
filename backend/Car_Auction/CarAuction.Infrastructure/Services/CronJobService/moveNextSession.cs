@@ -12,8 +12,11 @@ namespace CarAuction.Infrastructure.Services.CronJobService
         }
         public async Task MoveUnsoldVehicleAsync()
         {
+            var currentTime = DateTime.Now;
+
+            // Only move vehicles that have ended and are not sold
             var unsoldVehicles = await _context.AuctionVehicles
-                .Where(x => !x.IsSold /*&& x.EndTime <= DateTime.UtcNow*/)
+                .Where(x => !x.IsSold && x.EndTime <= currentTime)
                 .ToListAsync();
 
             foreach (var vehicle in unsoldVehicles)
@@ -46,8 +49,15 @@ namespace CarAuction.Infrastructure.Services.CronJobService
                         vehicle.CurrentPrice = vehicle.CurrentPrice * saleChannel.PricePercentage;
                         vehicle.BuyItNowPrice = vehicle.BuyItNowPrice * saleChannel.BuyItNowPercentage;
 
-                        vehicle.StartTime = DateTime.UtcNow;
-                        vehicle.EndTime = DateTime.UtcNow.AddHours(6);
+                        // For demonstration purposes, reset the start and end time
+                        // vehicle.StartTime = DateTime.UtcNow;
+                        // vehicle.EndTime = DateTime.UtcNow.AddHours(6);
+
+                        // For actual business logic, move StartTime and EndTime to the next day
+                        vehicle.StartTime = DateTime.Now.AddHours(24);
+                        vehicle.EndTime = DateTime.Now.AddHours(24 + 6);
+                        
+
                     }
                 }
                 else

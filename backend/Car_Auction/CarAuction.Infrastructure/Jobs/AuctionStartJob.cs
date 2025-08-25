@@ -18,8 +18,11 @@ namespace CarAuction.Infrastructure.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation($"Auction start Job started at {TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")).ToString("dd/MM/yyyy HH:mm:ss")}");
+           
             await _setting.ImportAuctionSettingAsync();
+           
             await _auctionVehicle.LoadAuctionVehiclesAsync();
+           
             _logger.LogInformation($"Auction start Job finished at {TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")).ToString("dd/MM/yyyy HH:mm:ss")}");
         }
     }
